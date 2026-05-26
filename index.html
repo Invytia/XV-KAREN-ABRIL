@@ -10,88 +10,77 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- ESTILOS GENERALES Y PALETA DE COLORES --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        /* --- ESTILOS GENERALES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Alice', serif;
-            background-color: #1c2d37;
+            background-color: #1a252c;
             color: #2b2b2b;
             overflow-x: hidden;
         }
 
-        /* --- PANTALLA DE PORTADA (SOBRE / LIBRO) --- */
+        /* --- PANTALLA DE PORTADA Y ZOOM HACIA ADENTRO --- */
         #cover-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1c2d37;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0f161a;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.2s ease-in-out, visibility 1.2s;
+            perspective: 1000px; /* Necesario para un zoom 3D realista */
+            transition: visibility 2s;
         }
         
         .book-envelope {
             position: relative;
-            width: 90%;
-            max-width: 420px;
-            height: 85vh;
-            max-height: 650px;
-            background: url('assets/entrada.jpg') center no-repeat;
+            width: 100%;
+            height: 100%;
+            background: url('assets/entrada.jpg') center center no-repeat;
             background-size: cover;
-            border: 8px double #c5a059;
-            border-radius: 4px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
-            padding-bottom: 40px;
-            transition: transform 1.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 1.5s ease-in-out;
-            transform-origin: center; /* Ajusta al centro para el zoom a la silueta/llave */
+            /* La transición ahora es más larga y afecta la escala y la opacidad */
+            transition: transform 2.5s cubic-bezier(0.5, 0, 0.2, 1), opacity 2s ease-in;
+            transform-origin: center center; 
         }
 
-        /* Animación de Zoom profundo al entrar */
+        /* Animación: Crece enormemente hacia el usuario y se desvanece */
         .zoom-active .book-envelope {
-            transform: scale(12);
+            transform: scale(40); /* Zoom profundo para "atravesar" la imagen */
             opacity: 0;
         }
         .zoom-active #cover-overlay {
-            opacity: 0;
-            visibility: hidden;
             pointer-events: none;
+            background-color: transparent;
+            transition: background-color 2s ease;
         }
 
-        /* --- BOTONES ESTILO ALICIA --- */
-        .btn-magic {
+        .btn-enter {
             font-family: 'Cinzel', serif;
-            background: #f7f4eb;
+            background: rgba(247, 244, 235, 0.85);
             color: #1c2d37;
             border: 2px solid #c5a059;
-            padding: 12px 28px;
-            font-size: 14px;
+            padding: 15px 35px;
+            font-size: 16px;
             font-weight: bold;
             letter-spacing: 2px;
             cursor: pointer;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 4px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
             transition: all 0.3s ease;
             text-transform: uppercase;
+            backdrop-filter: blur(5px);
         }
-        .btn-magic:hover {
+        .btn-enter:hover {
             background: #c5a059;
-            color: #f7f4eb;
-            box-shadow: 0 8px 20px rgba(197, 160, 89, 0.4);
+            color: #fff;
+            transform: scale(1.05);
         }
 
-        /* --- CONTENIDO PRINCIPAL DE LA INVITACIÓN --- */
+        /* --- CONTENIDO PRINCIPAL --- */
         #main-content {
             background: url('assets/fondo.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -100,199 +89,196 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 35px;
+            gap: 50px;
             opacity: 0;
-            transition: opacity 2s ease-in-out;
+            transition: opacity 2.5s ease-in-out;
+            transition-delay: 0.5s; /* Espera a que el zoom esté avanzado */
         }
-        
-        /* Revelar el fondo una vez se quita la portada */
-        body.content-ready #main-content {
-            opacity: 1;
+        body.content-ready #main-content { opacity: 1; }
+
+        /* --- ESTILO DE HOJA DE LIBRO ANTIGUO --- */
+        .book-page {
+            background-color: #f6f1e3; /* Color papel marfil */
+            background-image: repeating-linear-gradient(transparent, transparent 28px, rgba(197, 160, 89, 0.05) 28px, rgba(197, 160, 89, 0.05) 29px);
+            width: 92%;
+            max-width: 500px;
+            padding: 45px 30px;
+            position: relative;
+            text-align: center;
+            border-radius: 3px 12px 12px 3px; /* Simula el borde suelto de la hoja */
+            /* Efecto de hojas apiladas y doblez del lomo */
+            box-shadow: 
+                inset 10px 0 20px rgba(0,0,0,0.08), /* Sombra interna del lomo */
+                4px 4px 0 #e6decc,
+                8px 8px 0 #d1c8b3,
+                15px 15px 20px rgba(0,0,0,0.3);
+            z-index: 1;
+            color: #3b3a36;
         }
 
-        /* Tarjetas de texto estilo páginas de libro antiguo (Parchment) */
-        .parchment-card {
-            background: rgba(247, 244, 235, 0.94);
-            border: 2px solid #c5a059;
-            border-radius: 4px;
-            padding: 35px 20px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            text-align: center;
-            position: relative;
-        }
-        .parchment-card::before {
+        /* Margen interno estilo imprenta clásica */
+        .book-page::before {
             content: '';
             position: absolute;
-            top: 4px; left: 4px; right: 4px; bottom: 4px;
-            border: 1px dashed #c5a059;
+            top: 20px; left: 35px; right: 20px; bottom: 20px;
+            border: 1px double #c5a059;
             pointer-events: none;
+            opacity: 0.6;
         }
 
-        /* --- TIPOGRAFÍA INTERNA --- */
+        /* --- TIPOGRAFÍA ESTILO LITERARIO --- */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            color: #1c2d37;
+            font-size: 42px;
+            color: #1a252c;
             margin-bottom: 5px;
             font-weight: 700;
         }
         .subtitle {
             font-family: 'Cinzel', serif;
             font-size: 13px;
-            color: #c5a059;
-            letter-spacing: 4px;
+            color: #9e7b39;
+            letter-spacing: 3px;
             margin-bottom: 20px;
             text-transform: uppercase;
         }
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            color: #1c2d37;
+            font-size: 24px;
+            color: #1a252c;
             margin-bottom: 15px;
+            font-style: italic;
         }
         p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #444;
-            margin-bottom: 10px;
+            font-size: 17px;
+            line-height: 1.7;
+            margin-bottom: 15px;
         }
         .divider {
             color: #c5a059;
-            font-size: 14px;
-            margin: 15px 0;
-            letter-spacing: 5px;
+            font-size: 16px;
+            margin: 20px 0;
+            letter-spacing: 8px;
+        }
+        .drop-cap {
+            float: left;
+            font-size: 50px;
+            line-height: 40px;
+            padding-top: 4px;
+            padding-right: 8px;
+            padding-left: 3px;
+            font-family: 'Playfair Display', serif;
+            color: #9e7b39;
         }
 
-        /* --- CUENTA REGRESIVA --- */
+        /* --- COMPONENTES --- */
         .countdown-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
         .time-box {
-            background: #1c2d37;
-            color: #f7f4eb;
+            background: transparent;
             border: 1px solid #c5a059;
-            border-radius: 4px;
+            border-radius: 2px;
             padding: 10px;
-            min-width: 65px;
+            min-width: 60px;
+            position: relative;
+        }
+        .time-box::after {
+            content: ''; position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border: 1px dashed rgba(197, 160, 89, 0.4);
+            pointer-events: none;
         }
         .time-box span {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 26px;
             display: block;
-            font-weight: bold;
-            color: #c5a059;
+            color: #1a252c;
         }
         .time-box label {
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #666;
         }
 
-        /* --- WIDGET CALENDARIO ESTILO PAPEL --- */
+        /* Widget Calendario Impreso */
         .calendar-widget {
             width: 100%;
-            max-width: 300px;
-            margin: 15px auto;
+            max-width: 280px;
+            margin: 20px auto;
             border-collapse: collapse;
-            background: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: 'Alice', serif;
         }
         .calendar-widget th, .calendar-widget td {
-            border: 1px solid #e2dacb;
-            padding: 8px;
+            padding: 8px 4px;
             text-align: center;
-            font-size: 14px;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
         }
         .calendar-widget th {
-            background-color: #1c2d37;
-            color: #f7f4eb;
+            color: #9e7b39;
             font-family: 'Cinzel', serif;
             font-size: 11px;
+            border-bottom: 2px solid #c5a059;
         }
         .calendar-widget .event-day {
-            background-color: #c5a059;
-            color: white;
+            background-color: #9e7b39;
+            color: #f6f1e3;
             font-weight: bold;
             border-radius: 50%;
-            position: relative;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* --- BOTÓN STICKY DE MÚSICA --- */
-        #music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
-            background: #1c2d37;
-            border: 2px solid #c5a059;
-            color: #f7f4eb;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-        #music-control:hover {
-            transform: scale(1.1);
-        }
-
-        /* --- FORMULARIO DE CONFIRMACIÓN --- */
-        .rsvp-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: left;
-            margin-top: 15px;
-        }
-        .rsvp-form label {
-            font-size: 14px;
-            font-weight: bold;
-            color: #1c2d37;
-        }
-        .rsvp-form input, .rsvp-form select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #c5a059;
-            background: #fff;
-            font-family: 'Alice', serif;
-            font-size: 15px;
-            border-radius: 4px;
-            color: #2b2b2b;
-        }
-        .rsvp-form input:focus, .rsvp-form select:focus {
-            outline: 2px solid #1c2d37;
-        }
-        .btn-whatsapp {
-            background: #25d366;
-            color: white;
+        /* Botones de acción dentro de la hoja */
+        .btn-action {
+            background: #1a252c;
+            color: #f6f1e3;
             border: none;
-            padding: 12px;
+            padding: 12px 20px;
             font-family: 'Cinzel', serif;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            margin-top: 10px;
-            transition: background 0.3s;
+            width: 100%;
+            max-width: 250px;
+            margin: 15px auto 0;
+            transition: all 0.3s;
         }
-        .btn-whatsapp:hover {
-            background: #20ba5a;
+        .btn-action:hover { background: #9e7b39; }
+        .btn-whatsapp { background: #25d366; color: white; }
+        .btn-whatsapp:hover { background: #20ba5a; }
+
+        /* Botón de Música */
+        #music-control {
+            position: fixed; bottom: 20px; right: 20px; z-index: 999;
+            background: rgba(26, 37, 44, 0.9); border: 1px solid #c5a059;
+            color: #f6f1e3; width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
+
+        /* Formulario */
+        .rsvp-form { display: flex; flex-direction: column; gap: 15px; text-align: left; margin-top: 20px; }
+        .rsvp-form label { font-size: 14px; font-weight: bold; font-family: 'Cinzel', serif; color: #1a252c; }
+        .rsvp-form input, .rsvp-form select {
+            width: 100%; padding: 10px; border: 1px solid #d1c8b3;
+            background: transparent; font-family: 'Alice', serif; font-size: 15px; border-radius: 2px;
+        }
+        .rsvp-form input:focus, .rsvp-form select:focus { outline: none; border-color: #9e7b39; }
+
     </style>
 </head>
 <body>
@@ -305,92 +291,86 @@
 
     <div id="cover-overlay">
         <div class="book-envelope" id="envelope">
-            <button class="btn-magic" onclick="openInvitation()">Abrir Invitación</button>
+            <button class="btn-enter" onclick="openInvitation()">Entrar al País de las Maravillas</button>
         </div>
     </div>
 
     <div id="main-content">
 
-        <div class="parchment-card">
-            <p style="font-style: italic; font-size: 14px; color:#c5a059;">"Silencio, por favor... una maravillosa historia está por comenzar."</p>
+        <div class="book-page">
+            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo I</p>
             <div class="divider">♦ ♣ ♦</div>
             <h1>Karen Abril</h1>
             <div class="subtitle">Mis XV Años</div>
-            <p>Hay momentos en la vida que son mágicos, y el más especial de todos es poder compartir esta hermosa aventura con las personas que más quiero.</p>
+            <p><span class="drop-cap">H</span>ay momentos en la vida que son mágicos, y el más especial de todos es poder compartir esta hermosa aventura con las personas que más quiero. Te invito a pasar la página y ser parte de mi historia.</p>
         </div>
 
-        <div class="parchment-card">
+        <div class="book-page">
+            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo II</p>
             <h2>Con la bendición de mis padres</h2>
             <div class="subtitle">Carlos Ramis</div>
-            <p style="margin-top:-15px; margin-bottom:10px;">&</p>
+            <p style="margin:-15px 0 10px;">&</p>
             <div class="subtitle">Karina Solano</div>
-            <p>Quienes con amor y guía me han acompañado a lo largo de este increíble viaje al País de las Maravillas.</p>
+            <p>Quienes con amor, paciencia y guía me han acompañado a lo largo de este increíble viaje, desde que era una niña hasta este maravilloso día.</p>
         </div>
 
-        <div class="parchment-card">
-            <h2>¡No llegues tarde!</h2>
-            <div class="subtitle">El tiempo corre veloz</div>
+        <div class="book-page">
+            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo III</p>
+            <h2>¡El tiempo corre veloz!</h2>
+            <p>Como diría el Conejo Blanco, no hay tiempo que perder. Ajusta tu reloj de bolsillo para nuestro encuentro.</p>
             <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Días</label></div>
                 <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
                 <div class="time-box"><span id="minutes">00</span><label>Min</label></div>
                 <div class="time-box"><span id="seconds">00</span><label>Seg</label></div>
             </div>
-            <div class="divider"><i class="fa-solid fa-clock"></i></div>
-        </div>
-
-        <div class="parchment-card">
-            <h2>¿Dónde y Cuándo?</h2>
             <div class="divider">♠ ♥ ♠</div>
-            <p><strong>Fecha:</strong> 15 de Noviembre de 2026</p>
-            <p><strong>Horario:</strong> 4:00 p.m.</p>
-            <p style="margin-top: 15px;"><strong>Ceremonia y Recepción:</strong></p>
-            <p style="font-size: 18px; font-weight: bold; color: #1c2d37;">Jardines La Escondida</p>
-            <p style="font-style: italic; font-size: 14px;">El lugar ideal para nuestra mágica celebración.</p>
         </div>
 
-        <div class="parchment-card">
-            <h2>Noviembre 2026</h2>
-            <div class="subtitle">Reserva la fecha</div>
+        <div class="book-page">
+            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo IV</p>
+            <h2>El Jardín Secreto</h2>
+            <p>Nuestra cita está marcada en el calendario para el <strong>15 de Noviembre de 2026</strong> a las <strong>4:00 p.m.</strong></p>
             
             <table class="calendar-widget">
                 <thead>
-                    <tr>
-                        <th>Do</th><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sá</th>
-                    </tr>
+                    <tr><th>Do</th><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sá</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
                     <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
-                    <tr><td class="event-day">15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+                    <tr><td><span class="event-day">15</span></td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
                     <tr><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td></tr>
                     <tr><td>29</td><td>30</td><td></td><td></td><td></td><td></td><td></td></tr>
                 </tbody>
             </table>
 
-            <button class="btn-magic" style="margin-top:15px; font-size: 11px;" onclick="addToCalendar()">
-                <i class="fa-solid fa-calendar-plus"></i> Agregar al Calendario
+            <p style="margin-top: 15px; font-weight:bold;">Ceremonia y Recepción:</p>
+            <p style="font-family: 'Cinzel', serif; color: #9e7b39;">Jardines La Escondida</p>
+
+            <button class="btn-action" onclick="addToCalendar()">
+                <i class="fa-solid fa-calendar-plus"></i> Guardar Fecha
             </button>
         </div>
 
-        <div class="parchment-card">
+        <div class="book-page">
+            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo V</p>
             <h2>Confirmación de Asistencia</h2>
-            <div class="subtitle">¿Nos acompañarás?</div>
-            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora.</p>
+            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora final.</p>
             
             <div class="rsvp-form">
                 <div>
-                    <label for="guest-name">Nombre del Invitado:</label>
+                    <label for="guest-name">Tu Nombre:</label>
                     <input type="text" id="guest-name" placeholder="Escribe tu nombre completo">
                 </div>
                 <div>
-                    <label for="attendance-status">¿Asistirás?</label>
+                    <label for="attendance-status">Asistencia:</label>
                     <select id="attendance-status">
-                        <option value="sí asistiré">Sí asistiré</option>
-                        <option value="no podré asistir">No podré asistir</option>
+                        <option value="sí asistiré">Sí asistiré al País de las Maravillas</option>
+                        <option value="no podré asistir">No podré asistir esta vez</option>
                     </select>
                 </div>
-                <button class="btn-whatsapp" onclick="sendRSVP()">
+                <button class="btn-action btn-whatsapp" onclick="sendRSVP()">
                     <i class="fa-brands fa-whatsapp"></i> Confirmar vía WhatsApp
                 </button>
             </div>
@@ -403,27 +383,23 @@
         const musicIcon = document.getElementById('music-icon');
         const musicControl = document.getElementById('music-control');
 
-        // Función para abrir la invitación con efecto Zoom
+        // Función para abrir la invitación con efecto Zoom hacia ADENTRO
         function openInvitation() {
-            // Añadir clase de animación
             document.body.classList.add('zoom-active');
             
-            // Intentar reproducir música automáticamente tras la interacción
             audio.play().then(() => {
                 musicIcon.className = "fa-solid fa-pause";
-            }).catch(error => console.log("Error al reproducir audio:", error));
+            }).catch(error => console.log("Interacción requerida para audio:", error));
 
-            // Mostrar el botón flotante de música
             musicControl.style.display = "flex";
 
-            // Esperar a que termine el efecto visual para liberar el scroll
+            // Ocultar la capa superior tras la animación de zoom
             setTimeout(() => {
                 document.getElementById('cover-overlay').style.display = 'none';
                 document.body.classList.add('content-ready');
-            }, 1600);
+            }, 2000); // 2 segundos da tiempo a que el zoom masivo termine
         }
 
-        // Play/Pause música de fondo
         function toggleMusic() {
             if (audio.paused) {
                 audio.play();
@@ -434,9 +410,8 @@
             }
         }
 
-        // Cuenta atrás interactiva para el 15 de Noviembre de 2026
+        // Cuenta regresiva
         const targetDate = new Date("Nov 15, 2026 16:00:00").getTime();
-
         const countdownInterval = setInterval(function() {
             const now = new Date().getTime();
             const difference = targetDate - now;
@@ -453,29 +428,26 @@
 
             if (difference < 0) {
                 clearInterval(countdownInterval);
-                document.querySelector(".countdown-container").innerHTML = "<p>¡Llegó el gran día!</p>";
+                document.querySelector(".countdown-container").innerHTML = "<p style='font-family: Cinzel; color:#9e7b39;'>¡Llegó la hora del té!</p>";
             }
         }, 1000);
 
-        // Enlace para celulares: Agregar a Google Calendar
         function addToCalendar() {
             const calendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+Karen+Abril&dates=20261115T220000Z/20261116T040000Z&details=Acomp%C3%A1%C3%B1anos+a+celebrar+los+XV+A%C3%B1os+de+Karen+Abril+en+el+Pa%C3%ADs+de+las+Maravillas.&location=Jardines+La+Escondida&sf=true&output=xml";
             window.open(calendarUrl, '_blank');
         }
 
-        // Enviar datos por WhatsApp organizados
         function sendRSVP() {
             const name = document.getElementById('guest-name').value.trim();
             const status = document.getElementById('attendance-status').value;
             const phoneNumber = "525519529235";
 
             if (name === "") {
-                alert("Por favor, escribe tu nombre antes de enviar la confirmación.");
+                alert("Por favor, escribe tu nombre con la pluma antes de enviar.");
                 return;
             }
 
-            // Crear mensaje personalizado codificado para URL
-            const textMessage = `¡Hola! Confirmo mi asistencia para los XV de Karen Abril.\n\n*Nombre:* ${name}\n*Asistencia:* ${status === 'sí asistiré' ? '✅ Sí asistiré' : '❌ No podré asistir'}`;
+            const textMessage = `¡Hola! Confirmo mi asistencia para los XV de Karen Abril.\n\n📖 *Invitado:* ${name}\n🎩 *Estatus:* ${status === 'sí asistiré' ? '✅ Sí asistiré' : '❌ No podré asistir'}`;
             const encodedMessage = encodeURIComponent(textMessage);
             
             const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
