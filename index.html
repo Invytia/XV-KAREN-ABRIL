@@ -6,30 +6,39 @@
     <title>XV Años - Karen Abril</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Pinyon+Script&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* --- ESTILOS GENERALES Y PALETA PREMIUM --- */
+        :root {
+            --ink-color: #2c2a26;
+            --gold-accent: #a68a4d;
+            --gold-light: #cfae67;
+            --paper-bg: #fcf9f2;
+            --paper-edge: #e6dfcc;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Alice', serif;
-            background-color: #1a252c;
-            color: #2b2b2b;
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #121619;
+            color: var(--ink-color);
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- PANTALLA DE PORTADA Y ZOOM HACIA ADENTRO --- */
         #cover-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #0f161a;
+            background-color: #0a0d0f;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            perspective: 1000px; /* Necesario para un zoom 3D realista */
-            transition: visibility 2s;
+            perspective: 1200px; 
+            transition: visibility 2.5s;
         }
         
         .book-envelope {
@@ -42,42 +51,41 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* La transición ahora es más larga y afecta la escala y la opacidad */
-            transition: transform 2.5s cubic-bezier(0.5, 0, 0.2, 1), opacity 2s ease-in;
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1), opacity 2.5s ease-in;
             transform-origin: center center; 
         }
 
-        /* Animación: Crece enormemente hacia el usuario y se desvanece */
+        /* Animación profunda */
         .zoom-active .book-envelope {
-            transform: scale(40); /* Zoom profundo para "atravesar" la imagen */
+            transform: scale(45); 
             opacity: 0;
         }
         .zoom-active #cover-overlay {
             pointer-events: none;
             background-color: transparent;
-            transition: background-color 2s ease;
+            transition: background-color 2.5s ease;
         }
 
         .btn-enter {
             font-family: 'Cinzel', serif;
-            background: rgba(247, 244, 235, 0.85);
-            color: #1c2d37;
-            border: 2px solid #c5a059;
-            padding: 15px 35px;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
+            background: rgba(252, 249, 242, 0.9);
+            color: var(--ink-color);
+            border: 1px solid var(--gold-accent);
+            padding: 16px 40px;
+            font-size: 15px;
+            letter-spacing: 3px;
             cursor: pointer;
-            border-radius: 4px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: all 0.4s ease;
             text-transform: uppercase;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            border-radius: 2px;
         }
         .btn-enter:hover {
-            background: #c5a059;
+            background: var(--gold-accent);
             color: #fff;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
 
         /* --- CONTENIDO PRINCIPAL --- */
@@ -85,199 +93,244 @@
             background: url('assets/fondo.jpg') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
-            padding: 60px 15px;
+            padding: 80px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 50px;
+            gap: 60px;
             opacity: 0;
             transition: opacity 2.5s ease-in-out;
-            transition-delay: 0.5s; /* Espera a que el zoom esté avanzado */
+            transition-delay: 0.8s; 
         }
         body.content-ready #main-content { opacity: 1; }
 
-        /* --- ESTILO DE HOJA DE LIBRO ANTIGUO --- */
+        /* --- ESTILO DE HOJA DE LIBRO PREMIUM --- */
         .book-page {
-            background-color: #f6f1e3; /* Color papel marfil */
-            background-image: repeating-linear-gradient(transparent, transparent 28px, rgba(197, 160, 89, 0.05) 28px, rgba(197, 160, 89, 0.05) 29px);
-            width: 92%;
-            max-width: 500px;
-            padding: 45px 30px;
+            /* Simulación realista de papel fino curvo */
+            background: linear-gradient(to right, #e8dfc8 0%, #f4ebd6 4%, var(--paper-bg) 10%, var(--paper-bg) 92%, #f4ebd6 98%, #e8dfc8 100%);
+            width: 95%;
+            max-width: 520px;
+            padding: 60px 40px;
             position: relative;
             text-align: center;
-            border-radius: 3px 12px 12px 3px; /* Simula el borde suelto de la hoja */
-            /* Efecto de hojas apiladas y doblez del lomo */
+            border-radius: 2px 6px 6px 2px; 
             box-shadow: 
-                inset 10px 0 20px rgba(0,0,0,0.08), /* Sombra interna del lomo */
-                4px 4px 0 #e6decc,
-                8px 8px 0 #d1c8b3,
-                15px 15px 20px rgba(0,0,0,0.3);
+                -15px 0 25px rgba(0,0,0,0.4), /* Sombra del lomo */
+                inset 2px 0 5px rgba(255,255,255,0.6), /* Luz en el pliegue */
+                10px 15px 25px rgba(0,0,0,0.3);
             z-index: 1;
-            color: #3b3a36;
+            color: var(--ink-color);
         }
 
-        /* Margen interno estilo imprenta clásica */
+        /* Borde interior sutil y elegante */
         .book-page::before {
             content: '';
             position: absolute;
-            top: 20px; left: 35px; right: 20px; bottom: 20px;
-            border: 1px double #c5a059;
+            top: 25px; left: 25px; right: 25px; bottom: 25px;
+            border: 1px solid rgba(166, 138, 77, 0.3);
+            outline: 1px solid rgba(166, 138, 77, 0.3);
+            outline-offset: -4px;
             pointer-events: none;
-            opacity: 0.6;
         }
 
-        /* --- TIPOGRAFÍA ESTILO LITERARIO --- */
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            color: #1a252c;
-            margin-bottom: 5px;
-            font-weight: 700;
+        /* --- TIPOGRAFÍA PREMIUM --- */
+        h1.cursive-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 72px;
+            color: var(--gold-accent);
+            margin-bottom: 0px;
+            line-height: 1.1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
+        
         .subtitle {
             font-family: 'Cinzel', serif;
             font-size: 13px;
-            color: #9e7b39;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
+            color: var(--ink-color);
+            letter-spacing: 4px;
+            margin-bottom: 25px;
             text-transform: uppercase;
         }
+
         h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: #1a252c;
-            margin-bottom: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+            font-weight: 600;
             font-style: italic;
         }
+
+        .cursive-names {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 42px;
+            color: var(--ink-color);
+            line-height: 1.2;
+            margin: 10px 0;
+        }
+
         p {
-            font-size: 17px;
-            line-height: 1.7;
-            margin-bottom: 15px;
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-weight: 400;
         }
+
+        .chapter-marker {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            color: var(--gold-accent);
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+        }
+
         .divider {
-            color: #c5a059;
-            font-size: 16px;
-            margin: 20px 0;
-            letter-spacing: 8px;
+            margin: 30px auto;
+            width: 60px;
+            height: 1px;
+            background-color: var(--gold-accent);
+            position: relative;
         }
+        .divider::before {
+            content: '♦';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--gold-accent);
+            font-size: 14px;
+            background: var(--paper-bg);
+            padding: 0 10px;
+        }
+
         .drop-cap {
             float: left;
-            font-size: 50px;
-            line-height: 40px;
-            padding-top: 4px;
-            padding-right: 8px;
-            padding-left: 3px;
-            font-family: 'Playfair Display', serif;
-            color: #9e7b39;
+            font-size: 65px;
+            line-height: 50px;
+            padding-top: 8px;
+            padding-right: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold-accent);
+            font-style: italic;
         }
 
         /* --- COMPONENTES --- */
+        /* Contador Minimalista Premium */
         .countdown-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 25px;
+            margin-top: 30px;
         }
         .time-box {
-            background: transparent;
-            border: 1px solid #c5a059;
-            border-radius: 2px;
-            padding: 10px;
-            min-width: 60px;
-            position: relative;
-        }
-        .time-box::after {
-            content: ''; position: absolute;
-            top: 2px; left: 2px; right: 2px; bottom: 2px;
-            border: 1px dashed rgba(197, 160, 89, 0.4);
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .time-box span {
-            font-family: 'Playfair Display', serif;
-            font-size: 26px;
-            display: block;
-            color: #1a252c;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36px;
+            color: var(--ink-color);
+            font-weight: 400;
+            border-bottom: 1px solid var(--gold-accent);
+            padding-bottom: 5px;
+            min-width: 45px;
         }
         .time-box label {
+            font-family: 'Cinzel', serif;
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666;
+            letter-spacing: 2px;
+            color: #777;
+            margin-top: 10px;
         }
 
-        /* Widget Calendario Impreso */
+        /* Widget Calendario Impreso Fino */
         .calendar-widget {
             width: 100%;
-            max-width: 280px;
-            margin: 20px auto;
+            max-width: 320px;
+            margin: 30px auto;
             border-collapse: collapse;
-            font-family: 'Alice', serif;
         }
         .calendar-widget th, .calendar-widget td {
-            padding: 8px 4px;
+            padding: 12px 5px;
             text-align: center;
-            font-size: 15px;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+            font-size: 18px;
+            color: var(--ink-color);
         }
         .calendar-widget th {
-            color: #9e7b39;
             font-family: 'Cinzel', serif;
             font-size: 11px;
-            border-bottom: 2px solid #c5a059;
+            letter-spacing: 2px;
+            color: var(--gold-accent);
+            border-bottom: 1px solid rgba(166, 138, 77, 0.3);
         }
         .calendar-widget .event-day {
-            background-color: #9e7b39;
-            color: #f6f1e3;
-            font-weight: bold;
-            border-radius: 50%;
+            position: relative;
             display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-weight: 600;
+            color: var(--gold-accent);
+        }
+        .calendar-widget .event-day::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35px; height: 35px;
+            border: 1px solid var(--gold-accent);
+            border-radius: 50%;
+            z-index: -1;
         }
 
-        /* Botones de acción dentro de la hoja */
+        /* Botones de acción */
         .btn-action {
-            background: #1a252c;
-            color: #f6f1e3;
-            border: none;
-            padding: 12px 20px;
+            background: transparent;
+            color: var(--ink-color);
+            border: 1px solid var(--gold-accent);
+            padding: 14px 25px;
             font-family: 'Cinzel', serif;
             font-size: 12px;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer;
-            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            max-width: 250px;
-            margin: 15px auto 0;
-            transition: all 0.3s;
+            max-width: 280px;
+            margin: 25px auto 0;
+            transition: all 0.4s;
+            text-transform: uppercase;
         }
-        .btn-action:hover { background: #9e7b39; }
-        .btn-whatsapp { background: #25d366; color: white; }
-        .btn-whatsapp:hover { background: #20ba5a; }
+        .btn-action:hover {
+            background: var(--gold-accent);
+            color: #fff;
+        }
+        
+        .btn-whatsapp { border-color: #25d366; color: #25d366; }
+        .btn-whatsapp:hover { background: #25d366; color: white; }
 
-        /* Botón de Música */
+        /* Botón de Música Flotante */
         #music-control {
-            position: fixed; bottom: 20px; right: 20px; z-index: 999;
-            background: rgba(26, 37, 44, 0.9); border: 1px solid #c5a059;
-            color: #f6f1e3; width: 45px; height: 45px; border-radius: 50%;
+            position: fixed; bottom: 30px; right: 30px; z-index: 999;
+            background: rgba(20, 25, 28, 0.8); border: 1px solid var(--gold-accent);
+            color: var(--gold-light); width: 50px; height: 50px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s, background 0.3s;
+            backdrop-filter: blur(4px);
         }
+        #music-control:hover { transform: scale(1.1); background: var(--ink-color); }
 
-        /* Formulario */
-        .rsvp-form { display: flex; flex-direction: column; gap: 15px; text-align: left; margin-top: 20px; }
-        .rsvp-form label { font-size: 14px; font-weight: bold; font-family: 'Cinzel', serif; color: #1a252c; }
+        /* Formulario Elegante */
+        .rsvp-form { display: flex; flex-direction: column; gap: 20px; text-align: left; margin-top: 30px; padding: 0 15px; }
+        .rsvp-form label { font-size: 13px; font-family: 'Cinzel', serif; color: var(--gold-accent); letter-spacing: 1px; }
         .rsvp-form input, .rsvp-form select {
-            width: 100%; padding: 10px; border: 1px solid #d1c8b3;
-            background: transparent; font-family: 'Alice', serif; font-size: 15px; border-radius: 2px;
+            width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid rgba(166, 138, 77, 0.4);
+            background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--ink-color);
+            transition: border-color 0.3s;
         }
-        .rsvp-form input:focus, .rsvp-form select:focus { outline: none; border-color: #9e7b39; }
+        .rsvp-form input:focus, .rsvp-form select:focus { outline: none; border-bottom-color: var(--gold-accent); }
 
     </style>
 </head>
@@ -298,43 +351,44 @@
     <div id="main-content">
 
         <div class="book-page">
-            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo I</p>
-            <div class="divider">♦ ♣ ♦</div>
-            <h1>Karen Abril</h1>
-            <div class="subtitle">Mis XV Años</div>
+            <div class="chapter-marker">Capítulo I</div>
+            <h1 class="cursive-title">Karen Abril</h1>
+            <div class="subtitle" style="margin-top: 15px;">Mis XV Años</div>
+            <div class="divider"></div>
             <p><span class="drop-cap">H</span>ay momentos en la vida que son mágicos, y el más especial de todos es poder compartir esta hermosa aventura con las personas que más quiero. Te invito a pasar la página y ser parte de mi historia.</p>
         </div>
 
         <div class="book-page">
-            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo II</p>
+            <div class="chapter-marker">Capítulo II</div>
             <h2>Con la bendición de mis padres</h2>
-            <div class="subtitle">Carlos Ramis</div>
-            <p style="margin:-15px 0 10px;">&</p>
-            <div class="subtitle">Karina Solano</div>
-            <p>Quienes con amor, paciencia y guía me han acompañado a lo largo de este increíble viaje, desde que era una niña hasta este maravilloso día.</p>
+            <div class="cursive-names">Carlos Ramis</div>
+            <p style="font-family: 'Cinzel', serif; font-size: 14px; margin: 0; color: var(--gold-accent);">&</p>
+            <div class="cursive-names">Karina Solano</div>
+            <div class="divider"></div>
+            <p>Quienes con profundo amor, paciencia y guía me han acompañado a lo largo de este increíble viaje, desde que era una niña hasta este maravilloso día.</p>
         </div>
 
         <div class="book-page">
-            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo III</p>
+            <div class="chapter-marker">Capítulo III</div>
             <h2>¡El tiempo corre veloz!</h2>
-            <p>Como diría el Conejo Blanco, no hay tiempo que perder. Ajusta tu reloj de bolsillo para nuestro encuentro.</p>
+            <p>Como diría el Conejo Blanco, no hay tiempo que perder. Ajusta tu reloj de bolsillo para nuestro mágico encuentro.</p>
+            
             <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Días</label></div>
                 <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
                 <div class="time-box"><span id="minutes">00</span><label>Min</label></div>
                 <div class="time-box"><span id="seconds">00</span><label>Seg</label></div>
             </div>
-            <div class="divider">♠ ♥ ♠</div>
         </div>
 
         <div class="book-page">
-            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo IV</p>
+            <div class="chapter-marker">Capítulo IV</div>
             <h2>El Jardín Secreto</h2>
-            <p>Nuestra cita está marcada en el calendario para el <strong>15 de Noviembre de 2026</strong> a las <strong>4:00 p.m.</strong></p>
+            <p>Nuestra cita está marcada en el calendario para el próximo<br><strong style="color: var(--gold-accent);">15 de Noviembre de 2026</strong> a las <strong style="color: var(--gold-accent);">4:00 p.m.</strong></p>
             
             <table class="calendar-widget">
                 <thead>
-                    <tr><th>Do</th><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sá</th></tr>
+                    <tr><th>DO</th><th>LU</th><th>MA</th><th>MI</th><th>JU</th><th>VI</th><th>SA</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
@@ -345,33 +399,34 @@
                 </tbody>
             </table>
 
-            <p style="margin-top: 15px; font-weight:bold;">Ceremonia y Recepción:</p>
-            <p style="font-family: 'Cinzel', serif; color: #9e7b39;">Jardines La Escondida</p>
+            <div class="divider"></div>
+            <p style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px;">Ceremonia y Recepción</p>
+            <p class="cursive-names" style="font-size: 34px; margin-top: 5px;">Jardines La Escondida</p>
 
             <button class="btn-action" onclick="addToCalendar()">
-                <i class="fa-solid fa-calendar-plus"></i> Guardar Fecha
+                <i class="fa-regular fa-calendar"></i> Guardar Fecha
             </button>
         </div>
 
         <div class="book-page">
-            <p style="font-style: italic; font-size: 14px; color:#9e7b39; text-align: center;">Capítulo V</p>
+            <div class="chapter-marker">Capítulo V</div>
             <h2>Confirmación de Asistencia</h2>
-            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora final.</p>
+            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora final de nuestra celebración.</p>
             
             <div class="rsvp-form">
                 <div>
-                    <label for="guest-name">Tu Nombre:</label>
+                    <label for="guest-name">TU NOMBRE</label>
                     <input type="text" id="guest-name" placeholder="Escribe tu nombre completo">
                 </div>
                 <div>
-                    <label for="attendance-status">Asistencia:</label>
+                    <label for="attendance-status">ASISTENCIA</label>
                     <select id="attendance-status">
                         <option value="sí asistiré">Sí asistiré al País de las Maravillas</option>
                         <option value="no podré asistir">No podré asistir esta vez</option>
                     </select>
                 </div>
                 <button class="btn-action btn-whatsapp" onclick="sendRSVP()">
-                    <i class="fa-brands fa-whatsapp"></i> Confirmar vía WhatsApp
+                    <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Confirmar Asistencia
                 </button>
             </div>
         </div>
@@ -383,7 +438,6 @@
         const musicIcon = document.getElementById('music-icon');
         const musicControl = document.getElementById('music-control');
 
-        // Función para abrir la invitación con efecto Zoom hacia ADENTRO
         function openInvitation() {
             document.body.classList.add('zoom-active');
             
@@ -393,11 +447,10 @@
 
             musicControl.style.display = "flex";
 
-            // Ocultar la capa superior tras la animación de zoom
             setTimeout(() => {
                 document.getElementById('cover-overlay').style.display = 'none';
                 document.body.classList.add('content-ready');
-            }, 2000); // 2 segundos da tiempo a que el zoom masivo termine
+            }, 2500); 
         }
 
         function toggleMusic() {
@@ -410,7 +463,6 @@
             }
         }
 
-        // Cuenta regresiva
         const targetDate = new Date("Nov 15, 2026 16:00:00").getTime();
         const countdownInterval = setInterval(function() {
             const now = new Date().getTime();
@@ -428,7 +480,7 @@
 
             if (difference < 0) {
                 clearInterval(countdownInterval);
-                document.querySelector(".countdown-container").innerHTML = "<p style='font-family: Cinzel; color:#9e7b39;'>¡Llegó la hora del té!</p>";
+                document.querySelector(".countdown-container").innerHTML = "<p style='font-family: Pinyon Script; font-size: 40px; color:#a68a4d;'>¡Llegó la hora del té!</p>";
             }
         }, 1000);
 
@@ -443,7 +495,7 @@
             const phoneNumber = "525519529235";
 
             if (name === "") {
-                alert("Por favor, escribe tu nombre con la pluma antes de enviar.");
+                alert("Por favor, plasma tu nombre con la pluma antes de enviar.");
                 return;
             }
 
