@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XV Años - Karen Abril</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GENERALES Y PALETA DE COLORES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Alice', serif;
+            background-color: #1c2d37;
+            color: #2b2b2b;
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE PORTADA (SOBRE / LIBRO) --- */
+        #cover-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1c2d37;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s;
+        }
+        
+        .book-envelope {
+            position: relative;
+            width: 90%;
+            max-width: 420px;
+            height: 85vh;
+            max-height: 650px;
+            background: url('assets/entrada.jpg') center no-repeat;
+            background-size: cover;
+            border: 8px double #c5a059;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 40px;
+            transition: transform 1.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 1.5s ease-in-out;
+            transform-origin: center; /* Ajusta al centro para el zoom a la silueta/llave */
+        }
+
+        /* Animación de Zoom profundo al entrar */
+        .zoom-active .book-envelope {
+            transform: scale(12);
+            opacity: 0;
+        }
+        .zoom-active #cover-overlay {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* --- BOTONES ESTILO ALICIA --- */
+        .btn-magic {
+            font-family: 'Cinzel', serif;
+            background: #f7f4eb;
+            color: #1c2d37;
+            border: 2px solid #c5a059;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .btn-magic:hover {
+            background: #c5a059;
+            color: #f7f4eb;
+            box-shadow: 0 8px 20px rgba(197, 160, 89, 0.4);
+        }
+
+        /* --- CONTENIDO PRINCIPAL DE LA INVITACIÓN --- */
+        #main-content {
+            background: url('assets/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 60px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        /* Revelar el fondo una vez se quita la portada */
+        body.content-ready #main-content {
+            opacity: 1;
+        }
+
+        /* Tarjetas de texto estilo páginas de libro antiguo (Parchment) */
+        .parchment-card {
+            background: rgba(247, 244, 235, 0.94);
+            border: 2px solid #c5a059;
+            border-radius: 4px;
+            padding: 35px 20px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            text-align: center;
+            position: relative;
+        }
+        .parchment-card::before {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border: 1px dashed #c5a059;
+            pointer-events: none;
+        }
+
+        /* --- TIPOGRAFÍA INTERNA --- */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            color: #1c2d37;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            color: #c5a059;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #1c2d37;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .divider {
+            color: #c5a059;
+            font-size: 14px;
+            margin: 15px 0;
+            letter-spacing: 5px;
+        }
+
+        /* --- CUENTA REGRESIVA --- */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .time-box {
+            background: #1c2d37;
+            color: #f7f4eb;
+            border: 1px solid #c5a059;
+            border-radius: 4px;
+            padding: 10px;
+            min-width: 65px;
+        }
+        .time-box span {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            display: block;
+            font-weight: bold;
+            color: #c5a059;
+        }
+        .time-box label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- WIDGET CALENDARIO ESTILO PAPEL --- */
+        .calendar-widget {
+            width: 100%;
+            max-width: 300px;
+            margin: 15px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .calendar-widget th, .calendar-widget td {
+            border: 1px solid #e2dacb;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .calendar-widget th {
+            background-color: #1c2d37;
+            color: #f7f4eb;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+        }
+        .calendar-widget .event-day {
+            background-color: #c5a059;
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        /* --- BOTÓN STICKY DE MÚSICA --- */
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            background: #1c2d37;
+            border: 2px solid #c5a059;
+            color: #f7f4eb;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        #music-control:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- FORMULARIO DE CONFIRMACIÓN --- */
+        .rsvp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+            margin-top: 15px;
+        }
+        .rsvp-form label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1c2d37;
+        }
+        .rsvp-form input, .rsvp-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #c5a059;
+            background: #fff;
+            font-family: 'Alice', serif;
+            font-size: 15px;
+            border-radius: 4px;
+            color: #2b2b2b;
+        }
+        .rsvp-form input:focus, .rsvp-form select:focus {
+            outline: 2px solid #1c2d37;
+        }
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn-whatsapp:hover {
+            background: #20ba5a;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop src="assets/cancion.mp3"></audio>
+
+    <div id="music-control" style="display: none;" onclick="toggleMusic()">
+        <i id="music-icon" class="fa-solid fa-music"></i>
+    </div>
+
+    <div id="cover-overlay">
+        <div class="book-envelope" id="envelope">
+            <button class="btn-magic" onclick="openInvitation()">Abrir Invitación</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+
+        <div class="parchment-card">
+            <p style="font-style: italic; font-size: 14px; color:#c5a059;">"Silencio, por favor... una maravillosa historia está por comenzar."</p>
+            <div class="divider">♦ ♣ ♦</div>
+            <h1>Karen Abril</h1>
+            <div class="subtitle">Mis XV Años</div>
+            <p>Hay momentos en la vida que son mágicos, y el más especial de todos es poder compartir esta hermosa aventura con las personas que más quiero.</p>
+        </div>
+
+        <div class="parchment-card">
+            <h2>Con la bendición de mis padres</h2>
+            <div class="subtitle">Carlos Ramis</div>
+            <p style="margin-top:-15px; margin-bottom:10px;">&</p>
+            <div class="subtitle">Karina Solano</div>
+            <p>Quienes con amor y guía me han acompañado a lo largo de este increíble viaje al País de las Maravillas.</p>
+        </div>
+
+        <div class="parchment-card">
+            <h2>¡No llegues tarde!</h2>
+            <div class="subtitle">El tiempo corre veloz</div>
+            <div class="countdown-container">
+                <div class="time-box"><span id="days">00</span><label>Días</label></div>
+                <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
+                <div class="time-box"><span id="minutes">00</span><label>Min</label></div>
+                <div class="time-box"><span id="seconds">00</span><label>Seg</label></div>
+            </div>
+            <div class="divider"><i class="fa-solid fa-clock"></i></div>
+        </div>
+
+        <div class="parchment-card">
+            <h2>¿Dónde y Cuándo?</h2>
+            <div class="divider">♠ ♥ ♠</div>
+            <p><strong>Fecha:</strong> 15 de Noviembre de 2026</p>
+            <p><strong>Horario:</strong> 4:00 p.m.</p>
+            <p style="margin-top: 15px;"><strong>Ceremonia y Recepción:</strong></p>
+            <p style="font-size: 18px; font-weight: bold; color: #1c2d37;">Jardines La Escondida</p>
+            <p style="font-style: italic; font-size: 14px;">El lugar ideal para nuestra mágica celebración.</p>
+        </div>
+
+        <div class="parchment-card">
+            <h2>Noviembre 2026</h2>
+            <div class="subtitle">Reserva la fecha</div>
+            
+            <table class="calendar-widget">
+                <thead>
+                    <tr>
+                        <th>Do</th><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+                    <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+                    <tr><td class="event-day">15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+                    <tr><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td></tr>
+                    <tr><td>29</td><td>30</td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+
+            <button class="btn-magic" style="margin-top:15px; font-size: 11px;" onclick="addToCalendar()">
+                <i class="fa-solid fa-calendar-plus"></i> Agregar al Calendario
+            </button>
+        </div>
+
+        <div class="parchment-card">
+            <h2>Confirmación de Asistencia</h2>
+            <div class="subtitle">¿Nos acompañarás?</div>
+            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora.</p>
+            
+            <div class="rsvp-form">
+                <div>
+                    <label for="guest-name">Nombre del Invitado:</label>
+                    <input type="text" id="guest-name" placeholder="Escribe tu nombre completo">
+                </div>
+                <div>
+                    <label for="attendance-status">¿Asistirás?</label>
+                    <select id="attendance-status">
+                        <option value="sí asistiré">Sí asistiré</option>
+                        <option value="no podré asistir">No podré asistir</option>
+                    </select>
+                </div>
+                <button class="btn-whatsapp" onclick="sendRSVP()">
+                    <i class="fa-brands fa-whatsapp"></i> Confirmar vía WhatsApp
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-music');
+        const musicIcon = document.getElementById('music-icon');
+        const musicControl = document.getElementById('music-control');
+
+        // Función para abrir la invitación con efecto Zoom
+        function openInvitation() {
+            // Añadir clase de animación
+            document.body.classList.add('zoom-active');
+            
+            // Intentar reproducir música automáticamente tras la interacción
+            audio.play().then(() => {
+                musicIcon.className = "fa-solid fa-pause";
+            }).catch(error => console.log("Error al reproducir audio:", error));
+
+            // Mostrar el botón flotante de música
+            musicControl.style.display = "flex";
+
+            // Esperar a que termine el efecto visual para liberar el scroll
+            setTimeout(() => {
+                document.getElementById('cover-overlay').style.display = 'none';
+                document.body.classList.add('content-ready');
+            }, 1600);
+        }
+
+        // Play/Pause música de fondo
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicIcon.className = "fa-solid fa-pause";
+            } else {
+                audio.pause();
+                musicIcon.className = "fa-solid fa-play";
+            }
+        }
+
+        // Cuenta atrás interactiva para el 15 de Noviembre de 2026
+        const targetDate = new Date("Nov 15, 2026 16:00:00").getTime();
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            if (difference < 0) {
+                clearInterval(countdownInterval);
+                document.querySelector(".countdown-container").innerHTML = "<p>¡Llegó el gran día!</p>";
+            }
+        }, 1000);
+
+        // Enlace para celulares: Agregar a Google Calendar
+        function addToCalendar() {
+            const calendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+Karen+Abril&dates=20261115T220000Z/20261116T040000Z&details=Acomp%C3%A1%C3%B1anos+a+celebrar+los+XV+A%C3%B1os+de+Karen+Abril+en+el+Pa%C3%ADs+de+las+Maravillas.&location=Jardines+La+Escondida&sf=true&output=xml";
+            window.open(calendarUrl, '_blank');
+        }
+
+        // Enviar datos por WhatsApp organizados
+        function sendRSVP() {
+            const name = document.getElementById('guest-name').value.trim();
+            const status = document.getElementById('attendance-status').value;
+            const phoneNumber = "525519529235";
+
+            if (name === "") {
+                alert("Por favor, escribe tu nombre antes de enviar la confirmación.");
+                return;
+            }
+
+            // Crear mensaje personalizado codificado para URL
+            const textMessage = `¡Hola! Confirmo mi asistencia para los XV de Karen Abril.\n\n*Nombre:* ${name}\n*Asistencia:* ${status === 'sí asistiré' ? '✅ Sí asistiré' : '❌ No podré asistir'}`;
+            const encodedMessage = encodeURIComponent(textMessage);
+            
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
