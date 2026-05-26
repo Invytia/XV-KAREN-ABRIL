@@ -10,13 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- ESTILOS GENERALES Y PALETA PREMIUM --- */
+        /* --- ESTILOS GENERALES --- */
         :root {
             --ink-color: #2c2a26;
             --gold-accent: #a68a4d;
-            --gold-light: #cfae67;
             --paper-bg: #fcf9f2;
-            --paper-edge: #e6dfcc;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +26,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- PANTALLA DE PORTADA Y ZOOM HACIA ADENTRO --- */
+        /* --- PORTADA Y ZOOM PROFUNDO --- */
         #cover-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -43,28 +41,18 @@
         
         .book-envelope {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: url('assets/entrada.jpg') center center no-repeat;
             background-size: cover;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1), opacity 2.5s ease-in;
             transform-origin: center center; 
         }
 
-        /* Animación profunda */
-        .zoom-active .book-envelope {
-            transform: scale(45); 
-            opacity: 0;
-        }
-        .zoom-active #cover-overlay {
-            pointer-events: none;
-            background-color: transparent;
-            transition: background-color 2.5s ease;
-        }
+        .zoom-active .book-envelope { transform: scale(45); opacity: 0; }
+        .zoom-active #cover-overlay { pointer-events: none; background-color: transparent; }
 
         .btn-enter {
             font-family: 'Cinzel', serif;
@@ -72,26 +60,31 @@
             color: var(--ink-color);
             border: 1px solid var(--gold-accent);
             padding: 16px 40px;
-            font-size: 15px;
-            letter-spacing: 3px;
+            font-size: 15px; letter-spacing: 3px;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            transition: all 0.4s ease;
-            text-transform: uppercase;
             backdrop-filter: blur(8px);
             border-radius: 2px;
-        }
-        .btn-enter:hover {
-            background: var(--gold-accent);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            text-transform: uppercase;
         }
 
-        /* --- CONTENIDO PRINCIPAL --- */
+        /* --- CUERPO DE LA INVITACIÓN CON MEJORAS ANTI-PIXELADO --- */
         #main-content {
-            background: url('assets/fondo.jpg') no-repeat center center fixed;
+            /* MEJORA: Superposición de color (linear-gradient) sobre la imagen.
+               Esto difumina los píxeles y suaviza el fondo.
+            */
+            background-image: 
+                linear-gradient(rgba(18, 22, 25, 0.5), rgba(18, 22, 25, 0.5)), /* Capa de color oscura */
+                url('assets/fondo.jpg'); /* Tu imagen original */
+            
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
             background-size: cover;
+
+            /* MEJORA: Sugerir escalado de alta calidad al navegador (soporte variado) */
+            image-rendering: -webkit-optimize-contrast; /* Safari/old Chrome */
+            image-rendering: high-quality; /* Estándar futuro */
+
             min-height: 100vh;
             padding: 80px 15px;
             display: flex;
@@ -104,232 +97,60 @@
         }
         body.content-ready #main-content { opacity: 1; }
 
-        /* --- ESTILO DE HOJA DE LIBRO PREMIUM --- */
+        /* --- DISEÑO DE HOJA DE LIBRO (BOOK-PAGE) --- */
         .book-page {
-            /* Simulación realista de papel fino curvo */
             background: linear-gradient(to right, #e8dfc8 0%, #f4ebd6 4%, var(--paper-bg) 10%, var(--paper-bg) 92%, #f4ebd6 98%, #e8dfc8 100%);
-            width: 95%;
-            max-width: 520px;
+            width: 95%; max-width: 520px;
             padding: 60px 40px;
             position: relative;
             text-align: center;
             border-radius: 2px 6px 6px 2px; 
-            box-shadow: 
-                -15px 0 25px rgba(0,0,0,0.4), /* Sombra del lomo */
-                inset 2px 0 5px rgba(255,255,255,0.6), /* Luz en el pliegue */
-                10px 15px 25px rgba(0,0,0,0.3);
-            z-index: 1;
+            box-shadow: -15px 0 25px rgba(0,0,0,0.4), inset 2px 0 5px rgba(255,255,255,0.6), 10px 15px 25px rgba(0,0,0,0.3);
             color: var(--ink-color);
         }
 
-        /* Borde interior sutil y elegante */
         .book-page::before {
-            content: '';
-            position: absolute;
+            content: ''; position: absolute;
             top: 25px; left: 25px; right: 25px; bottom: 25px;
             border: 1px solid rgba(166, 138, 77, 0.3);
-            outline: 1px solid rgba(166, 138, 77, 0.3);
-            outline-offset: -4px;
+            outline: 1px solid rgba(166, 138, 77, 0.3); outline-offset: -4px;
             pointer-events: none;
         }
 
-        /* --- TIPOGRAFÍA PREMIUM --- */
-        h1.cursive-title {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 72px;
-            color: var(--gold-accent);
-            margin-bottom: 0px;
-            line-height: 1.1;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
-        }
-        
-        .subtitle {
-            font-family: 'Cinzel', serif;
-            font-size: 13px;
-            color: var(--ink-color);
-            letter-spacing: 4px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-        }
+        /* --- TIPOGRAFÍA --- */
+        h1.cursive-title { font-family: 'Pinyon Script', cursive; font-size: 72px; color: var(--gold-accent); line-height: 1.1; }
+        .subtitle { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 25px; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--gold-accent); font-style: italic; margin-bottom: 20px; }
+        .cursive-names { font-family: 'Pinyon Script', cursive; font-size: 42px; line-height: 1.2; margin: 10px 0; }
+        p { font-size: 20px; line-height: 1.8; margin-bottom: 20px; }
+        .chapter-marker { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold-accent); letter-spacing: 5px; margin-bottom: 30px; }
 
-        h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 32px;
-            color: var(--gold-accent);
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-style: italic;
-        }
+        .divider { margin: 30px auto; width: 60px; height: 1px; background-color: var(--gold-accent); position: relative; }
+        .divider::before { content: '♦'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: var(--gold-accent); font-size: 14px; background: var(--paper-bg); padding: 0 10px; }
 
-        .cursive-names {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 42px;
-            color: var(--ink-color);
-            line-height: 1.2;
-            margin: 10px 0;
-        }
-
-        p {
-            font-size: 20px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-
-        .chapter-marker {
-            font-family: 'Cinzel', serif;
-            font-size: 11px;
-            color: var(--gold-accent);
-            letter-spacing: 5px;
-            margin-bottom: 30px;
-        }
-
-        .divider {
-            margin: 30px auto;
-            width: 60px;
-            height: 1px;
-            background-color: var(--gold-accent);
-            position: relative;
-        }
-        .divider::before {
-            content: '♦';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--gold-accent);
-            font-size: 14px;
-            background: var(--paper-bg);
-            padding: 0 10px;
-        }
-
-        .drop-cap {
-            float: left;
-            font-size: 65px;
-            line-height: 50px;
-            padding-top: 8px;
-            padding-right: 10px;
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--gold-accent);
-            font-style: italic;
-        }
+        .drop-cap { float: left; font-size: 65px; line-height: 50px; padding: 8px 10px 0 0; font-family: 'Cormorant Garamond', serif; color: var(--gold-accent); font-style: italic; }
 
         /* --- COMPONENTES --- */
-        /* Contador Minimalista Premium */
-        .countdown-container {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 30px;
-        }
-        .time-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .time-box span {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 36px;
-            color: var(--ink-color);
-            font-weight: 400;
-            border-bottom: 1px solid var(--gold-accent);
-            padding-bottom: 5px;
-            min-width: 45px;
-        }
-        .time-box label {
-            font-family: 'Cinzel', serif;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #777;
-            margin-top: 10px;
-        }
+        .countdown-container { display: flex; justify-content: center; gap: 25px; margin-top: 30px; }
+        .time-box span { font-family: 'Cormorant Garamond', serif; font-size: 36px; border-bottom: 1px solid var(--gold-accent); padding-bottom: 5px; min-width: 45px; display: block;}
+        .time-box label { font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #777; margin-top: 10px; display: block;}
 
-        /* Widget Calendario Impreso Fino */
-        .calendar-widget {
-            width: 100%;
-            max-width: 320px;
-            margin: 30px auto;
-            border-collapse: collapse;
-        }
-        .calendar-widget th, .calendar-widget td {
-            padding: 12px 5px;
-            text-align: center;
-            font-size: 18px;
-            color: var(--ink-color);
-        }
-        .calendar-widget th {
-            font-family: 'Cinzel', serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--gold-accent);
-            border-bottom: 1px solid rgba(166, 138, 77, 0.3);
-        }
-        .calendar-widget .event-day {
-            position: relative;
-            display: inline-block;
-            font-weight: 600;
-            color: var(--gold-accent);
-        }
-        .calendar-widget .event-day::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 35px; height: 35px;
-            border: 1px solid var(--gold-accent);
-            border-radius: 50%;
-            z-index: -1;
-        }
+        .calendar-widget { width: 100%; max-width: 320px; margin: 30px auto; border-collapse: collapse; }
+        .calendar-widget th, .calendar-widget td { padding: 12px 5px; text-align: center; font-size: 18px; }
+        .calendar-widget th { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: var(--gold-accent); border-bottom: 1px solid rgba(166, 138, 77, 0.3); }
+        .calendar-widget .event-day { position: relative; font-weight: 600; color: var(--gold-accent); z-index: 1;}
+        .calendar-widget .event-day::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; border: 1px solid var(--gold-accent); border-radius: 50%; z-index: -1; }
 
-        /* Botones de acción */
-        .btn-action {
-            background: transparent;
-            color: var(--ink-color);
-            border: 1px solid var(--gold-accent);
-            padding: 14px 25px;
-            font-family: 'Cinzel', serif;
-            font-size: 12px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            max-width: 280px;
-            margin: 25px auto 0;
-            transition: all 0.4s;
-            text-transform: uppercase;
-        }
-        .btn-action:hover {
-            background: var(--gold-accent);
-            color: #fff;
-        }
-        
+        .btn-action { background: transparent; color: var(--ink-color); border: 1px solid var(--gold-accent); padding: 14px 25px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; max-width: 280px; margin: 25px auto 0; text-transform: uppercase; }
+        .btn-action:hover { background: var(--gold-accent); color: #fff; }
         .btn-whatsapp { border-color: #25d366; color: #25d366; }
         .btn-whatsapp:hover { background: #25d366; color: white; }
 
-        /* Botón de Música Flotante */
-        #music-control {
-            position: fixed; bottom: 30px; right: 30px; z-index: 999;
-            background: rgba(20, 25, 28, 0.8); border: 1px solid var(--gold-accent);
-            color: var(--gold-light); width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: transform 0.3s, background 0.3s;
-            backdrop-filter: blur(4px);
-        }
-        #music-control:hover { transform: scale(1.1); background: var(--ink-color); }
+        #music-control { position: fixed; bottom: 30px; right: 30px; z-index: 999; background: rgba(20, 25, 28, 0.8); border: 1px solid var(--gold-accent); color: var(--gold-accent); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); }
 
-        /* Formulario Elegante */
         .rsvp-form { display: flex; flex-direction: column; gap: 20px; text-align: left; margin-top: 30px; padding: 0 15px; }
         .rsvp-form label { font-size: 13px; font-family: 'Cinzel', serif; color: var(--gold-accent); letter-spacing: 1px; }
-        .rsvp-form input, .rsvp-form select {
-            width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid rgba(166, 138, 77, 0.4);
-            background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--ink-color);
-            transition: border-color 0.3s;
-        }
+        .rsvp-form input, .rsvp-form select { width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid rgba(166, 138, 77, 0.4); background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--ink-color); }
         .rsvp-form input:focus, .rsvp-form select:focus { outline: none; border-bottom-color: var(--gold-accent); }
 
     </style>
@@ -372,7 +193,6 @@
             <div class="chapter-marker">Capítulo III</div>
             <h2>¡El tiempo corre veloz!</h2>
             <p>Como diría el Conejo Blanco, no hay tiempo que perder. Ajusta tu reloj de bolsillo para nuestro mágico encuentro.</p>
-            
             <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Días</label></div>
                 <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
@@ -411,8 +231,7 @@
         <div class="book-page">
             <div class="chapter-marker">Capítulo V</div>
             <h2>Confirmación de Asistencia</h2>
-            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora final de nuestra celebración.</p>
-            
+            <p>Por favor ayúdanos confirmando tu asistencia antes de que el reloj marque la hora final.</p>
             <div class="rsvp-form">
                 <div>
                     <label for="guest-name">TU NOMBRE</label>
@@ -426,7 +245,7 @@
                     </select>
                 </div>
                 <button class="btn-action btn-whatsapp" onclick="sendRSVP()">
-                    <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Confirmar Asistencia
+                    <i class="fa-brands fa-whatsapp"></i> Confirmar Asistencia
                 </button>
             </div>
         </div>
@@ -440,13 +259,8 @@
 
         function openInvitation() {
             document.body.classList.add('zoom-active');
-            
-            audio.play().then(() => {
-                musicIcon.className = "fa-solid fa-pause";
-            }).catch(error => console.log("Interacción requerida para audio:", error));
-
+            audio.play().then(() => { musicIcon.className = "fa-solid fa-pause"; }).catch(e => console.log(e));
             musicControl.style.display = "flex";
-
             setTimeout(() => {
                 document.getElementById('cover-overlay').style.display = 'none';
                 document.body.classList.add('content-ready');
@@ -454,56 +268,28 @@
         }
 
         function toggleMusic() {
-            if (audio.paused) {
-                audio.play();
-                musicIcon.className = "fa-solid fa-pause";
-            } else {
-                audio.pause();
-                musicIcon.className = "fa-solid fa-play";
-            }
+            if (audio.paused) { audio.play(); musicIcon.className = "fa-solid fa-pause"; }
+            else { audio.pause(); musicIcon.className = "fa-solid fa-play"; }
         }
 
         const targetDate = new Date("Nov 15, 2026 16:00:00").getTime();
         const countdownInterval = setInterval(function() {
             const now = new Date().getTime();
-            const difference = targetDate - now;
-
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-
-            if (difference < 0) {
-                clearInterval(countdownInterval);
-                document.querySelector(".countdown-container").innerHTML = "<p style='font-family: Pinyon Script; font-size: 40px; color:#a68a4d;'>¡Llegó la hora del té!</p>";
-            }
+            const diff = targetDate - now;
+            document.getElementById("days").innerText = Math.floor(diff / 86400000).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            if (diff < 0) { clearInterval(countdownInterval); document.querySelector(".countdown-container").innerHTML = "<p style='font-family: Pinyon Script; font-size: 40px; color:#a68a4d;'>¡Llegó la hora del té!</p>"; }
         }, 1000);
 
-        function addToCalendar() {
-            const calendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+Karen+Abril&dates=20261115T220000Z/20261116T040000Z&details=Acomp%C3%A1%C3%B1anos+a+celebrar+los+XV+A%C3%B1os+de+Karen+Abril+en+el+Pa%C3%ADs+de+las+Maravillas.&location=Jardines+La+Escondida&sf=true&output=xml";
-            window.open(calendarUrl, '_blank');
-        }
+        function addToCalendar() { window.open("https://www.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+Karen+Abril&dates=20261115T220000Z/20261116T040000Z&details=Acomp%C3%A1%C3%B1anos+a+celebrar...&location=Jardines+La+Escondida&sf=true&output=xml", '_blank'); }
 
         function sendRSVP() {
             const name = document.getElementById('guest-name').value.trim();
             const status = document.getElementById('attendance-status').value;
-            const phoneNumber = "525519529235";
-
-            if (name === "") {
-                alert("Por favor, plasma tu nombre con la pluma antes de enviar.");
-                return;
-            }
-
-            const textMessage = `¡Hola! Confirmo mi asistencia para los XV de Karen Abril.\n\n📖 *Invitado:* ${name}\n🎩 *Estatus:* ${status === 'sí asistiré' ? '✅ Sí asistiré' : '❌ No podré asistir'}`;
-            const encodedMessage = encodeURIComponent(textMessage);
-            
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
-            window.open(whatsappUrl, '_blank');
+            if (name === "") { alert("Por favor, plasma tu nombre."); return; }
+            window.open(`https://api.whatsapp.com/send?phone=525519529235&text=${encodeURIComponent(`¡Hola! Confirmo RSVP para XV Karen Abril.\n\n📖 *Invitado:* ${name}\n🎩 *Estatus:* ${status === 'sí asistiré' ? '✅ Sí' : '❌ No'}`)}`, '_blank');
         }
     </script>
 </body>
